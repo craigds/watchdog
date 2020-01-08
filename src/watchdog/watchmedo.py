@@ -504,6 +504,12 @@ try to interpret them.
      default=10.0,
      help='when stopping, kill the subprocess after the specified timeout '
           '(default 10)')
+@arg('-W', '--drop',
+     dest='drop_during_restart',
+     action='store_true',
+     default=False,
+     help="Ignore events that occur while command is being restarted "
+          "to avoid multiple simultaneous instances")
 @expects_obj
 def auto_restart(args):
     """
@@ -547,7 +553,8 @@ def auto_restart(args):
                                ignore_patterns=ignore_patterns,
                                ignore_directories=args.ignore_directories,
                                stop_signal=stop_signal,
-                               kill_after=args.kill_after)
+                               kill_after=args.kill_after,
+                               drop_during_restart=args.drop_during_restart)
     handler.start()
     observer = Observer(timeout=args.timeout)
     observe_with(observer, handler, args.directories, args.recursive)
